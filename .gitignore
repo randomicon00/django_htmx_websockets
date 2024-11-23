@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Django stuff
+db.sqlite3
+media/
+
+# Static files
+static/output.css
+
+# Environment variables
+.env
+
+# Virtual environment 
+env/
+venv/
+
+# Tailwind CSS build artifacts
+node_modules/
+*.log
+
+# macOS specific files
+.DS_Store

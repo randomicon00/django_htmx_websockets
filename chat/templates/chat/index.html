@@ -3,21 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
-    <link href="/static/output.css" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <title>Chat</title>
 </head>
-<body class="bg-gray-100 h-screen flex justify-center items-center">
-    <div class="bg-white p-4 rounded shadow w-96">
-        <h1 class="text-lg font-bold mb-4">Chat Room</h1>
-        <div id="messages" class="h-64 overflow-y-scroll border p-2 mb-4"></div>
-        <form hx-ext="ws" ws-connect="/ws/chat/" ws-send="true" class="flex">
-            <input name="message" type="text" placeholder="Type a message..."
-                   class="flex-grow border p-2 rounded-l">
-            <button type="submit" class="bg-blue-500 text-white px-4 rounded-r">Send</button>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
+    <div class="w-full max-w-md p-4 bg-white shadow rounded-lg">
+        <div id="messages" class="space-y-2 mb-4">
+            <!-- Messages will appear here -->
+        </div>
+        <form hx-ext="ws" ws-connect="/ws/chat/" class="flex space-x-2">
+            <input
+                type="text"
+                name="message"
+                placeholder="Type your message..."
+                class="flex-grow p-2 border rounded"
+                required>
+            <button
+                type="submit"
+                class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Send
+            </button>
         </form>
     </div>
+
+    <script>
+        // Handle WebSocket messages
+        const ws = new WebSocket("ws://" + window.location.host + "/ws/chat/");
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            const messagesDiv = document.getElementById("messages");
+            const newMessage = document.createElement("div");
+            newMessage.className = `p-2 rounded ${data.type === "user" ? "bg-blue-100 text-right" : "bg-gray-100 text-left"}`;
+            newMessage.textContent = data.message;
+            messagesDiv.appendChild(newMessage);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        };
+    </script>
 </body>
 </html>

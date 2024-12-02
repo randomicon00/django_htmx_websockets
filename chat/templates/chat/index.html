@@ -44,6 +44,9 @@
             console.error("WebSocket Error:", error);
             alert("Connection error. Please try refreshing the page.");
         };
+        ws.onclose = () => {
+            console.warn("WebSocket connection closed.");
+        };
     </script>
 </body>
 </html>

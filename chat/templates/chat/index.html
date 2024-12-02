@@ -10,7 +10,7 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
     <div class="w-full max-w-md p-4 bg-white shadow rounded-lg">
-        <div id="messages" class="space-y-2 mb-4">
+        <div id="messages" class="overflow-y-auto h-64 space-y-2 p-2 border rounded-lg bg-gray-50">
             <!-- Messages will appear here -->
         </div>
         <form hx-ext="ws" ws-connect="/ws/chat/" class="flex space-x-2">

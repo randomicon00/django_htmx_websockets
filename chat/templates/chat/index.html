@@ -40,6 +40,10 @@
             messagesDiv.appendChild(newMessage);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         };
+        ws.onerror = (error) => {
+            console.error("WebSocket Error:", error);
+            alert("Connection error. Please try refreshing the page.");
+        };
     </script>
 </body>
 </html>

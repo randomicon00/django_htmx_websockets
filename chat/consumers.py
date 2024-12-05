@@ -1,5 +1,6 @@
 import json
 import random
+import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 
@@ -24,4 +25,5 @@ class ChatConsumer(AsyncWebsocketConsumer):
         bot_message = random.choice(bot_responses)
 
         # Simulate bot typing delay
+        await asyncio.sleep(1.5)  # Delay for 1.5 seconds
         await self.send(json.dumps({"type": "bot", "message": bot_message}))

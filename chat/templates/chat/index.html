@@ -10,19 +10,27 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
     <div class="w-full max-w-md p-4 bg-white shadow rounded-lg">
-        <div id="messages" class="overflow-y-auto h-64 space-y-2 p-2 border rounded-lg bg-gray-50">
+        <div 
+            id="messages" 
+            class="overflow-y-auto h-64 space-y-2 p-2 border rounded-lg bg-gray-50"
+            role="log"
+            aria-live="polite"
+            aria-atomic="true">
             <!-- Messages will appear here -->
         </div>
-        <form hx-ext="ws" ws-connect="/ws/chat/" class="flex space-x-2">
+        <form hx-ext="ws" ws-connect="/ws/chat/" class="flex space-x-2 mt-4">
+            <label for="message" class="sr-only">Message</label>
             <input
                 type="text"
+                id="message"
                 name="message"
                 placeholder="Type your message..."
-                class="flex-grow p-2 border rounded"
-                required>
+                class="flex-grow p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                required
+                aria-label="Type your message">
             <button
                 type="submit"
-                class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                class="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 Send
             </button>
         </form>
@@ -30,23 +38,33 @@
 
     <script>
         // Handle WebSocket messages
-        const ws = new WebSocket("ws://" + window.location.host + "/ws/chat/");
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
+        function connectWebSocket() {
+            const ws = new WebSocket(`ws://${window.location.host}/ws/chat/`);
             const messagesDiv = document.getElementById("messages");
-            const newMessage = document.createElement("div");
-            newMessage.className = `p-2 rounded ${data.type === "user" ? "bg-blue-100 text-right" : "bg-gray-100 text-left"}`;
-            newMessage.textContent = data.message;
-            messagesDiv.appendChild(newMessage);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        };
-        ws.onerror = (error) => {
-            console.error("WebSocket Error:", error);
-            alert("Connection error. Please try refreshing the page.");
-        };
-        ws.onclose = () => {
-            console.warn("WebSocket connection closed.");
-        };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                const newMessage = document.createElement("div");
+                newMessage.className = `p-2 rounded ${
+                    data.type === "user" ? "bg-blue-100 text-right" : "bg-gray-100 text-left"
+                }`;
+                newMessage.textContent = data.message;
+                messagesDiv.appendChild(newMessage);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            };
+
+            ws.onerror = (error) => {
+                console.error("WebSocket Error:", error);
+                alert("Connection error. Retrying...");
+            };
+
+            ws.onclose = () => {
+                console.warn("WebSocket connection closed. Reconnecting in 3 seconds...");
+                setTimeout(connectWebSocket, 3000);
+            };
+        }
+
+        connectWebSocket();
     </script>
 </body>
 </html>

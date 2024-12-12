@@ -8,7 +8,6 @@ class MessageAdmin(admin.ModelAdmin):
     list_filter = ("timestamp",)
     ordering = ("-timestamp",)
 
-
 class RoomAdmin(admin.ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name", "description")

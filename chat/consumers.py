@@ -15,15 +15,23 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Echo user's message back
         await self.send(json.dumps({"type": "user", "message": user_message}))
 
-        # BOT responses
+        # Bot responses
         bot_responses = [
-            "Hello there! How can I assist you?",
-            "I'm just a bot, but I try my best!",
-            "Interesting... tell me more!",
-            "That's a great point.",
+            "Hi there! How can I help you today?",
+            "I'm here to assist you. What do you need help with?",
+            "That's intriguing! Could you elaborate more?",
+            "Great point! Let me know if there's anything you'd like to discuss further.",
         ]
         bot_message = random.choice(bot_responses)
 
         # Simulate bot typing delay
         await asyncio.sleep(1.5)  # Delay for 1.5 seconds
         await self.send(json.dumps({"type": "bot", "message": bot_message}))
+
+    # Future Steps to Implement OpenAI Integration:
+    # 1. Install the OpenAI Python SDK: `pip install openai`
+    # 2. Import the `openai` library.
+    # 3. Set up your OpenAI API key securely.
+    # 4. Replace the random bot responses with an OpenAI API call, passing the user_message as input.
+    # 5. Parse the OpenAI API response and send it back to the client.
+    # 6. Test the integration thoroughly to ensure proper error handling and response generation.

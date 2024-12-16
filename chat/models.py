@@ -13,6 +13,9 @@ class Room(models.Model):
     def __str__(self):
         return f"Room: {self.name}"
 
+    def __repr__(self):
+        return f"<Room(name={self.name}, description={self.description})>"
+
 
 class Message(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="messages")
@@ -27,3 +30,6 @@ class Message(models.Model):
     def __str__(self):
         preview = f"{self.content[:50]}..." if len(self.content) > 50 else self.content
         return f"Message at {self.timestamp}: {preview}"
+
+    def __repr__(self):
+        return f"<Message(room={self.room.name}, timestamp={self.timestamp}, content_preview='{self.content[:50]}')>"

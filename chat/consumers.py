@@ -34,4 +34,4 @@ class ChatConsumer(AsyncWebsocketConsumer):
     # 3. Set up your OpenAI API key securely.
     # 4. Replace the random bot responses with an OpenAI API call, passing the user_message as input.
     # 5. Parse the OpenAI API response and send it back to the client.
-    # 6. Test the integration thoroughly to ensure proper error handling and response generation.
+    # 6. Test the integration to ensure proper error handling and response generation.

@@ -21,14 +21,22 @@ class Room(models.Model):
         ordering = ROOM_ORDERING
 
     def __str__(self):
-        return f"Room: {self.name}"
+        return self.name
 
     def __repr__(self):
-        return f"<Room(name={self.name}, description={self.description})>"
+        return (
+            f"<Room(name='{self.name}', description='{self.description[:30]}...')>"
+            if len(self.description) > 30
+            else f"<Room(name='{self.name}', description='{self.description}')>"
+        )
 
 
 class Message(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="messages")
+    room = models.ForeignKey(
+        Room,
+        on_delete=models.CASCADE,
+        related_name="messages",
+    )
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -43,7 +51,10 @@ class Message(models.Model):
             if len(self.content) > MESSAGE_CONTENT_PREVIEW_LENGTH
             else self.content
         )
-        return f"Message at {self.timestamp}: {preview}"
+        return f"Message in {self.room.name} at {self.timestamp}: {preview}"
 
     def __repr__(self):
-        return f"<Message(room={self.room.name}, timestamp={self.timestamp}, content_preview='{self.content[:MESSAGE_CONTENT_PREVIEW_LENGTH]}')>"
+        return (
+            f"<Message(room='{self.room.name}', timestamp='{self.timestamp}', "
+            f"content_preview='{self.content[:MESSAGE_CONTENT_PREVIEW_LENGTH]}')>"
+        )

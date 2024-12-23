@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <script src="https://unpkg.com/htmx.org"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,29 +11,18 @@
 <body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
     <div class="w-full max-w-md p-6 bg-white shadow-lg rounded-lg">
         <h1 class="text-2xl font-semibold text-center text-gray-700 mb-4">Chat Room</h1>
-        
-        <!-- Messages Section -->
-        <div 
-            id="messages" 
+        <div
+            id="messages"
             class="overflow-y-auto h-72 space-y-2 p-3 border rounded-lg bg-gray-100 scroll-smooth"
-            role="log"
-            aria-live="polite"
-            aria-atomic="true">
-            <!-- Example messages -->
+            role="log" aria-live="polite" aria-atomic="true">
             <div class="p-2 bg-blue-500 text-white rounded-lg self-end w-fit ml-auto">Hello!</div>
             <div class="p-2 bg-gray-300 text-gray-800 rounded-lg w-fit mr-auto">Hi there!</div>
         </div>
-        
-        <!-- Message Input Form -->
         <form hx-ext="ws" ws-connect="/ws/chat/" class="flex mt-4">
             <input
-                type="text"
-                id="message"
-                name="message"
-                placeholder="Type your message..."
+                type="text" id="message" name="message" placeholder="Type your message..."
                 class="flex-grow p-3 border rounded-l-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                required
-                aria-label="Type your message">
+                required aria-label="Type your message">
             <button
                 type="submit"
                 class="px-4 bg-blue-500 text-white font-medium rounded-r-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:outline-none">
@@ -43,7 +32,6 @@
     </div>
 
     <script>
-        // Handle WebSocket messages
         function connectWebSocket() {
             const ws = new WebSocket(`ws://${window.location.host}/ws/chat/`);
             const messagesDiv = document.getElementById("messages");
@@ -51,25 +39,27 @@
             ws.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 const newMessage = document.createElement("div");
-                newMessage.className = `p-2 rounded-lg w-fit ${
-                    data.type === "user" ? "bg-blue-500 text-white ml-auto" : "bg-gray-300 text-gray-800 mr-auto"
-                }`;
-                newMessage.textContent = data.message;
+                newMessage.className =
+                    "p-2 rounded-lg w-fit " +
+                    (data.type === "user"
+                        ? "bg-blue-500 text-white ml-auto"
+                        : "bg-gray-300 text-gray-800 mr-auto");
+                newMessage.innerHTML = data.message +
+                    ` <span class="text-xs text-gray-500 ml-2">${new Date().toLocaleTimeString()}</span>`;
                 messagesDiv.appendChild(newMessage);
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
             };
 
-            ws.onerror = (error) => {
-                console.error("WebSocket Error:", error);
+            ws.onerror = (err) => {
+                console.error("WebSocket Error:", err);
                 alert("Connection error. Retrying...");
             };
 
             ws.onclose = () => {
-                console.warn("WebSocket connection closed. Reconnecting in 3 seconds...");
+                console.warn("WebSocket closed. Reconnecting in 3s...");
                 setTimeout(connectWebSocket, 3000);
             };
         }
-
         connectWebSocket();
     </script>
 </body>

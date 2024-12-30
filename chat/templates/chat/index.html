@@ -1,67 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Room</title>
     <script src="https://unpkg.com/htmx.org"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Chat</title>
 </head>
-<body class="bg-gray-200 min-h-screen flex flex-col items-center justify-center">
-    <div class="w-full max-w-md p-6 bg-white shadow-lg rounded-lg">
-        <h1 class="text-2xl font-semibold text-center text-gray-700 mb-4">Chat Room</h1>
-        <div
-            id="messages"
-            class="overflow-y-auto h-72 space-y-2 p-3 border rounded-lg bg-gray-100 scroll-smooth"
-            role="log" aria-live="polite" aria-atomic="true">
-            <div class="p-2 bg-blue-500 text-white rounded-lg self-end w-fit ml-auto">Hello!</div>
-            <div class="p-2 bg-gray-300 text-gray-800 rounded-lg w-fit mr-auto">Hi there!</div>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="w-full max-w-lg p-6 bg-white shadow-lg rounded-lg">
+        <h1 class="text-2xl font-semibold text-center text-gray-800 mb-4">Chat Room</h1>
+
+        <div id="chat-messages" class="h-80 overflow-y-auto space-y-4 p-4 border rounded-lg bg-gray-50">
+            <!-- Messages dynamically loaded here -->
         </div>
-        <form hx-ext="ws" ws-connect="/ws/chat/" class="flex mt-4">
+
+        <form hx-ext="ws" ws-connect="/ws/chat/" class="flex items-center mt-4 space-x-3">
             <input
-                type="text" id="message" name="message" placeholder="Type your message..."
-                class="flex-grow p-3 border rounded-l-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                required aria-label="Type your message" autocomplete="off">
+                type="text"
+                name="message"
+                class="flex-grow border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Type your message..."
+                autocomplete="off"
+                required
+                aria-label="Type your message">
             <button
                 type="submit"
-                class="px-4 bg-blue-500 text-white font-medium rounded-r-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 Send
             </button>
         </form>
     </div>
 
     <script>
-        function connectWebSocket() {
-            const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-            const ws = new WebSocket(`${protocol}://${window.location.host}/ws/chat/`);
-            const messagesDiv = document.getElementById("messages");
+        document.body.addEventListener('htmx:wsAfterMessage', function (evt) {
+            const data = JSON.parse(evt.detail.message);
+            const chatMessages = document.getElementById('chat-messages');
 
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                const newMessage = document.createElement("div");
-                newMessage.className =
-                    "p-2 rounded-lg w-fit " +
-                    (data.type === "user"
-                        ? "bg-blue-500 text-white ml-auto"
-                        : "bg-gray-300 text-gray-800 mr-auto");
-                newMessage.innerHTML = data.message +
-                    ` <span class="text-xs text-gray-500 ml-2">${new Date().toLocaleTimeString()}</span>`;
-                messagesDiv.appendChild(newMessage);
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            };
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${data.type === 'user' ? 'justify-end' : 'justify-start'}`;
 
-            ws.onerror = (err) => {
-                console.error("WebSocket Error:", err);
-                alert("Connection error. Retrying...");
-            };
+            messageDiv.innerHTML = `
+                <div class="${data.type === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'} 
+                rounded-lg px-4 py-2 max-w-xs">${data.message}</div>`;
 
-            ws.onclose = () => {
-                console.warn("WebSocket closed. Reconnecting in 3s...");
-                setTimeout(connectWebSocket, 3000);
-            };
-        }
-        connectWebSocket();
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
     </script>
 </body>
 </html>

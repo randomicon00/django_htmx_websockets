@@ -24,8 +24,10 @@ class Room(models.Model):
         return self.name
 
     def __repr__(self):
-        description_preview = self.description[:30] + (
-            "..." if len(self.description) > 30 else ""
+        description_preview = (
+            f"{self.description[:30]}..."
+            if len(self.description) > 30
+            else self.description
         )
         return f"<Room(name='{self.name}', description='{description_preview}')>"
 
@@ -45,14 +47,18 @@ class Message(models.Model):
         ordering = MESSAGE_ORDERING
 
     def __str__(self):
-        content_preview = self.content[:MESSAGE_CONTENT_PREVIEW_LENGTH] + (
-            "..." if len(self.content) > MESSAGE_CONTENT_PREVIEW_LENGTH else ""
+        content_preview = (
+            f"{self.content[:MESSAGE_CONTENT_PREVIEW_LENGTH]}..."
+            if len(self.content) > MESSAGE_CONTENT_PREVIEW_LENGTH
+            else self.content
         )
         return f"Message in {self.room.name} at {self.timestamp}: {content_preview}"
 
     def __repr__(self):
-        content_preview = self.content[:MESSAGE_CONTENT_PREVIEW_LENGTH] + (
-            "..." if len(self.content) > MESSAGE_CONTENT_PREVIEW_LENGTH else ""
+        content_preview = (
+            f"{self.content[:MESSAGE_CONTENT_PREVIEW_LENGTH]}..."
+            if len(self.content) > MESSAGE_CONTENT_PREVIEW_LENGTH
+            else self.content
         )
         return (
             f"<Message(room='{self.room.name}', timestamp='{self.timestamp}', "

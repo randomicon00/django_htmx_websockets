@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,26 +9,26 @@
     <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <div class="w-full max-w-lg p-6 bg-white shadow-lg rounded-lg" role="main">
         <h1 class="text-2xl font-semibold text-center text-gray-800 mb-4">Chat Room</h1>
 
-        <div id="chat-messages" class="h-80 overflow-y-auto space-y-4 p-4 border rounded-lg bg-gray-50" aria-live="polite" aria-label="Chat messages">
+        <div id="chat-messages" class="h-80 overflow-y-auto space-y-4 p-4 border rounded-lg bg-gray-50"
+            aria-live="polite" aria-label="Chat messages">
             <!-- Messages dynamically loaded here -->
         </div>
 
         <form hx-ext="ws" ws-connect="/ws/chat/" class="flex items-center mt-4 space-x-3" aria-label="Send a message">
-            <input
-                type="text"
-                name="message"
-                class="flex-grow border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Type your message..."
-                autocomplete="off"
-                required
-                aria-label="Message input"
-                aria-describedby="chat-messages">
-            <button
-                type="submit"
+            <input type="text" id="message-input" <!-- Added ID here -->
+            name="message"
+            class="flex-grow border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Type your message..."
+            autocomplete="off"
+            required
+            aria-label="Message input"
+            aria-describedby="chat-messages">
+            <button type="submit"
                 class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 aria-label="Send message">
                 Send
@@ -36,6 +37,15 @@
     </div>
 
     <script>
+        // Function to clear the input field
+        function clearMessageInput() {
+            const messageInput = document.getElementById('message-input');
+            if (messageInput) {
+                messageInput.value = '';
+                messageInput.focus(); // Optional: Keep the focus on the input for quick typing
+            }
+        }
+
         document.body.addEventListener('htmx:wsAfterMessage', function (evt) {
             const data = JSON.parse(evt.detail.message);
             const chatMessages = document.getElementById('chat-messages');
@@ -49,7 +59,31 @@
 
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Clear the input field after sending the message
+            clearMessageInput();
+        });
+
+        // Handle form submission to ensure proper WebSocket messaging
+        document.querySelector('form').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput.value.trim();
+
+            if (message) {
+                // Send the message via WebSocket
+                this.dispatchEvent(new CustomEvent('htmx:wsSend', {
+                    detail: {
+                        message: JSON.stringify({message: message, type: 'user'})
+                    }
+                }));
+
+                // Optionally, clear the input immediately after sending
+                // clearMessageInput();
+            }
         });
     </script>
 </body>
+
 </html>

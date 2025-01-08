@@ -1,4 +1,5 @@
 from django.db import models
+
 from .constants import (
     ROOM_NAME_MAX_LENGTH,
     ROOM_VERBOSE_NAME,
@@ -12,8 +13,16 @@ from .constants import (
 
 
 class Room(models.Model):
-    name = models.CharField(max_length=ROOM_NAME_MAX_LENGTH)
-    description = models.TextField(blank=True)
+    name = models.CharField(
+        max_length=ROOM_NAME_MAX_LENGTH,
+        verbose_name="Room Name",
+        help_text="Enter the name of the room.",
+    )
+    description = models.TextField(
+        blank=True,
+        verbose_name="Description",
+        help_text="Provide a brief description of the room (optional).",
+    )
 
     class Meta:
         verbose_name = ROOM_VERBOSE_NAME
@@ -24,12 +33,15 @@ class Room(models.Model):
         return self.name
 
     def __repr__(self):
-        description_preview = (
+        return f"<Room(name='{self.name}', description_preview='{self._get_description_preview()}')>"
+
+    def _get_description_preview(self):
+        """Helper method to preview the description."""
+        return (
             f"{self.description[:30]}..."
             if len(self.description) > 30
             else self.description
         )
-        return f"<Room(name='{self.name}', description='{description_preview}')>"
 
 
 class Message(models.Model):
@@ -37,9 +49,18 @@ class Message(models.Model):
         Room,
         on_delete=models.CASCADE,
         related_name="messages",
+        verbose_name="Room",
+        help_text="Select the room this message belongs to.",
     )
-    content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
+    content = models.TextField(
+        verbose_name="Message Content",
+        help_text="Enter the content of the message.",
+    )
+    timestamp = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Timestamp",
+        help_text="The time this message was created.",
+    )
 
     class Meta:
         verbose_name = MESSAGE_VERBOSE_NAME
@@ -47,20 +68,18 @@ class Message(models.Model):
         ordering = MESSAGE_ORDERING
 
     def __str__(self):
-        content_preview = (
-            f"{self.content[:MESSAGE_CONTENT_PREVIEW_LENGTH]}..."
-            if len(self.content) > MESSAGE_CONTENT_PREVIEW_LENGTH
-            else self.content
-        )
-        return f"Message in {self.room.name} at {self.timestamp}: {content_preview}"
+        return f"Message in {self.room.name} at {self.timestamp}: {self._get_content_preview()}"
 
     def __repr__(self):
-        content_preview = (
+        return (
+            f"<Message(room='{self.room.name}', timestamp='{self.timestamp}', "
+            f"content_preview='{self._get_content_preview()}')>"
+        )
+
+    def _get_content_preview(self):
+        """Helper method to preview the content."""
+        return (
             f"{self.content[:MESSAGE_CONTENT_PREVIEW_LENGTH]}..."
             if len(self.content) > MESSAGE_CONTENT_PREVIEW_LENGTH
             else self.content
-        )
-        return (
-            f"<Message(room='{self.room.name}', timestamp='{self.timestamp}', "
-            f"content_preview='{content_preview}')>"
         )

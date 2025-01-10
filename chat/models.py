@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 from .constants import (
     ROOM_NAME_MAX_LENGTH,
@@ -18,6 +19,12 @@ class Room(models.Model):
         verbose_name="Room Name",
         help_text="Enter the name of the room.",
     )
+    slug = models.SlugField(
+        unique=True,
+        blank=True,
+        verbose_name="Slug",
+        help_text="Unique slug for the room.",
+    )
     description = models.TextField(
         blank=True,
         verbose_name="Description",
@@ -29,11 +36,16 @@ class Room(models.Model):
         verbose_name_plural = ROOM_VERBOSE_NAME_PLURAL
         ordering = ROOM_ORDERING
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 
     def __repr__(self):
-        return f"<Room(name='{self.name}', description_preview='{self._get_description_preview()}')>"
+        return f"<Room(name='{self.name}', slug='{self.slug}', description_preview='{self._get_description_preview()}')>"
 
     def _get_description_preview(self):
         """Helper method to preview the description."""

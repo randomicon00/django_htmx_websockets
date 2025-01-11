@@ -48,6 +48,13 @@
             }
         }
 
+        function formatTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
         document.body.addEventListener('htmx:wsAfterMessage', function (evt) {
             const data = JSON.parse(evt.detail.message);
             const chatMessages = document.getElementById('chat-messages');
@@ -55,9 +62,25 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = `flex ${data.type === 'user' ? 'justify-end' : 'justify-start'}`;
 
-            messageDiv.innerHTML = `
+            const messageBubble = document.createElement('div');
+            messageBubble.innerHTML = `
                 <div class="${data.type === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'} 
                 rounded-lg px-4 py-2 max-w-xs">${data.message}</div>`;
+            messageBubble.textContent = data.message;
+
+            const timestamp = document.createElement('span');
+            timestamp.className = 'text-sm text-gray-500 ml-2';
+            timestamp.textContent = formatTime();
+
+
+            if (data.type === 'user') {
+                messageDiv.appendChild(messageBubble);
+                messageDiv.appendChild(timestamp);
+            } else {
+                timestamp.className += ' mr-2';
+                messageDiv.appendChild(timestamp);
+                messageDiv.appendChild(messageBubble);
+            }
 
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;

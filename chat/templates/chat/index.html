@@ -1,114 +1,159 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat Room</title>
     <script src="https://unpkg.com/htmx.org"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
+  </head>
 
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+  <body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <div class="w-full max-w-lg p-6 bg-white shadow-lg rounded-lg" role="main">
-        <h1 class="text-2xl font-semibold text-center text-gray-800 mb-4">Chat Room</h1>
+      <h1 class="text-2xl font-semibold text-center text-gray-800 mb-4">
+        Chat Room
+      </h1>
 
-        <div id="chat-messages" class="h-80 overflow-y-auto space-y-4 p-4 border rounded-lg bg-gray-50"
-            aria-live="polite" aria-label="Chat messages" role="status">
-            <!-- Messages dynamically loaded here -->
-            <p class="text-gray-500 text-center">Start typing a message to see the conversation here.</p>
-        </div>
+      <div
+        id="chat-messages"
+        class="h-80 overflow-y-auto space-y-4 p-4 border rounded-lg bg-gray-50"
+        aria-live="polite"
+        aria-label="Chat messages"
+        role="status"
+      >
+        <!-- Messages dynamically loaded here -->
+        <p class="text-gray-500 text-center">
+          Start typing a message to see the conversation here.
+        </p>
+      </div>
 
-        <form hx-ext="ws" ws-connect="/ws/chat/" class="flex items-center mt-4 space-x-3" aria-label="Send a message">
-            <input type="text" id="message-input" <!-- Added ID here -->
-            name="message"
-            class="flex-grow border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Type your message..."
-            autocomplete="off"
-            required
-            aria-label="Message input"
-            aria-describedby="chat-messages"
-            aria-controls="chat-messages">
-            <button type="submit"
-                class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                aria-label="Send message">
-                Send
-            </button>
-        </form>
+      <!-- Typing indicator -->
+      <div
+        id="typing-indicator"
+        class="text-sm text-gray-500 italic mt-2 hidden"
+        aria-live="polite"
+      >
+        Someone is typing...
+      </div>
+
+      <form
+        hx-ext="ws"
+        ws-connect="/ws/chat/"
+        class="flex items-center mt-4 space-x-3"
+        aria-label="Send a message"
+      >
+        <input
+          type="text"
+          id="message-input"
+          name="message"
+          class="flex-grow border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Type your message..."
+          autocomplete="off"
+          required
+          aria-label="Message input"
+          aria-describedby="chat-messages"
+          aria-controls="chat-messages"
+        />
+        <button
+          type="submit"
+          class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          aria-label="Send message"
+        >
+          Send
+        </button>
+      </form>
     </div>
 
     <script>
-        // Function to clear the input field
-        function clearMessageInput() {
-            const messageInput = document.getElementById('message-input');
-            if (messageInput) {
-                messageInput.value = '';
-                messageInput.focus(); // Optional: Keep the focus on the input for quick typing
-            }
+      // Function to clear the input field
+      function clearMessageInput() {
+        const messageInput = document.getElementById("message-input");
+        if (messageInput) {
+          messageInput.value = "";
+          messageInput.focus(); // Optional: Keep the focus on the input for quick typing
         }
+      }
 
-        function formatTime() {
-            const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            return `${hours}:${minutes}`;
-        }
+      function formatTime() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, "0");
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        return `${hours}:${minutes}`;
+      }
 
-        document.body.addEventListener('htmx:wsAfterMessage', function (evt) {
-            const data = JSON.parse(evt.detail.message);
-            const chatMessages = document.getElementById('chat-messages');
+      // Typing indicator logic
+      const messageInput = document.getElementById("message-input");
+      const typingIndicator = document.getElementById("typing-indicator");
+      let typingTimeout;
 
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `flex ${data.type === 'user' ? 'justify-end' : 'justify-start'}`;
+      messageInput.addEventListener("input", () => {
+        // Show typing indicator
+        typingIndicator.classList.remove("hidden");
 
-            const messageBubble = document.createElement('div');
-            messageBubble.innerHTML = `
-                <div class="${data.type === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'} 
+        // Clear previous timeout
+        if (typingTimeout) clearTimeout(typingTimeout);
+
+        // Hide typing indicator after 1 second of inactivity
+        typingTimeout = setTimeout(() => {
+          typingIndicator.classList.add("hidden");
+        }, 1000);
+      });
+
+      document.body.addEventListener("htmx:wsAfterMessage", function (evt) {
+        const data = JSON.parse(evt.detail.message);
+        const chatMessages = document.getElementById("chat-messages");
+
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `flex ${data.type === "user" ? "justify-end" : "justify-start"}`;
+
+        const messageBubble = document.createElement("div");
+        messageBubble.innerHTML = `
+                <div class="${data.type === "user" ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"} 
                 rounded-lg px-4 py-2 max-w-xs">${data.message}</div>`;
-            messageBubble.textContent = data.message;
+        messageBubble.textContent = data.message;
 
-            const timestamp = document.createElement('span');
-            timestamp.className = 'text-sm text-gray-500 ml-2';
-            timestamp.textContent = formatTime();
+        const timestamp = document.createElement("span");
+        timestamp.className = "text-sm text-gray-500 ml-2";
+        timestamp.textContent = formatTime();
 
+        if (data.type === "user") {
+          messageDiv.appendChild(messageBubble);
+          messageDiv.appendChild(timestamp);
+        } else {
+          timestamp.className += " mr-2";
+          messageDiv.appendChild(timestamp);
+          messageDiv.appendChild(messageBubble);
+        }
 
-            if (data.type === 'user') {
-                messageDiv.appendChild(messageBubble);
-                messageDiv.appendChild(timestamp);
-            } else {
-                timestamp.className += ' mr-2';
-                messageDiv.appendChild(timestamp);
-                messageDiv.appendChild(messageBubble);
-            }
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        // Clear the input field after sending the message
+        clearMessageInput();
+      });
 
-            // Clear the input field after sending the message
-            clearMessageInput();
-        });
+      // Handle form submission to ensure proper WebSocket messaging
+      document.querySelector("form").addEventListener("submit", function (e) {
+        e.preventDefault(); // Prevent the default form submission
 
-        // Handle form submission to ensure proper WebSocket messaging
-        document.querySelector('form').addEventListener('submit', function (e) {
-            e.preventDefault(); // Prevent the default form submission
+        const messageInput = document.getElementById("message-input");
+        const message = messageInput.value.trim();
 
-            const messageInput = document.getElementById('message-input');
-            const message = messageInput.value.trim();
+        if (message) {
+          // Send the message via WebSocket
+          this.dispatchEvent(
+            new CustomEvent("htmx:wsSend", {
+              detail: {
+                message: JSON.stringify({ message: message, type: "user" }),
+              },
+            }),
+          );
 
-            if (message) {
-                // Send the message via WebSocket
-                this.dispatchEvent(new CustomEvent('htmx:wsSend', {
-                    detail: {
-                        message: JSON.stringify({message: message, type: 'user'})
-                    }
-                }));
-
-                // Optionally, clear the input immediately after sending
-                // clearMessageInput();
-            }
-        });
+          // Optionally, clear the input immediately after sending
+          // clearMessageInput();
+        }
+      });
     </script>
-</body>
-
+  </body>
 </html>

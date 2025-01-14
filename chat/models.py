@@ -18,6 +18,7 @@ class Room(models.Model):
         max_length=ROOM_NAME_MAX_LENGTH,
         verbose_name="Room Name",
         help_text="Enter the name of the room.",
+        unique=True,
     )
     slug = models.SlugField(
         unique=True,

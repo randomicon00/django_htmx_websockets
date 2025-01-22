@@ -28,6 +28,15 @@
         </p>
       </div>
 
+      <!-- Scroll to bottom button -->
+      <button
+        id="scroll-to-bottom"
+        class="hidden fixed bottom-16 right-6 bg-blue-500 text-white p-3 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        aria-label="Scroll to latest messages"
+      >
+        ↓
+      </button>
+
       <!-- Typing indicator -->
       <div
         id="typing-indicator"
@@ -97,37 +106,49 @@
         const data = JSON.parse(evt.detail.message);
         const chatMessages = document.getElementById("chat-messages");
 
+        // Remove initial placeholder text on first message
+        const placeholder = chatMessages.querySelector("p");
+        if (placeholder) chatMessages.removeChild(placeholder);
+
         const messageDiv = document.createElement("div");
-        messageDiv.className = `flex ${
-          data.type === "user" ? "justify-end" : "justify-start"
-        }`;
+        messageDiv.className = `flex ${data.type === "user" ? "justify-end" : "justify-start"} mb-2 group`;
 
         const messageBubble = document.createElement("div");
         const bgColor =
           data.type === "user"
             ? "bg-blue-500 text-white"
-            : "bg-gray-200 text-gray-800";
-        const additionalClasses =
-          "rounded-lg px-4 py-2 max-w-xs border border-gray-300 shadow-sm";
+            : "bg-gray-100 text-gray-800";
 
-        messageBubble.className = `${bgColor} ${additionalClasses}`;
-        messageBubble.textContent = data.message;
+        messageBubble.className = `${bgColor} rounded-lg px-4 py-2 max-w-xs relative transition-all duration-100 hover:shadow-md hover:-translate-y-0.5`;
 
+        // Message text
+        const messageText = document.createElement("span");
+        messageText.className = "pr-8"; // Leave space for timestamp
+        messageText.textContent = data.message;
+
+        // Timestamp inside bubble
         const timestamp = document.createElement("span");
-        timestamp.className = "text-sm text-gray-500 ml-2";
+        timestamp.className = `absolute bottom-1 right-2 text-xs ${
+          data.type === "user" ? "text-blue-100" : "text-gray-500"
+        } opacity-80 group-hover:opacity-100 transition-opacity`;
         timestamp.textContent = formatTime();
 
-        if (data.type === "user") {
-          messageDiv.appendChild(messageBubble);
-          messageDiv.appendChild(timestamp);
-        } else {
-          timestamp.className += " mr-2";
-          messageDiv.appendChild(timestamp);
-          messageDiv.appendChild(messageBubble);
-        }
+        // Add elements to bubble
+        messageBubble.appendChild(messageText);
+        messageBubble.appendChild(timestamp);
 
+        messageDiv.appendChild(messageBubble);
         chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Smart scroll behavior
+        const isNearBottom =
+          chatMessages.scrollHeight -
+            chatMessages.clientHeight -
+            chatMessages.scrollTop <
+          100;
+        if (isNearBottom) {
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
 
         clearMessageInput();
       });
@@ -145,6 +166,24 @@
             }),
           );
         }
+      });
+
+      const chatMessages = document.getElementById("chat-messages");
+      const scrollToBottomBtn = document.getElementById("scroll-to-bottom");
+
+      chatMessages.addEventListener("scroll", () => {
+        if (
+          chatMessages.scrollTop <
+          chatMessages.scrollHeight - chatMessages.clientHeight - 20
+        ) {
+          scrollToBottomBtn.classList.remove("hidden");
+        } else {
+          scrollToBottomBtn.classList.add("hidden");
+        }
+      });
+
+      scrollToBottomBtn.addEventListener("click", () => {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
       });
     </script>
   </body>

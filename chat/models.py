@@ -38,8 +38,14 @@ class Room(models.Model):
         ordering = ROOM_ORDERING
 
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if not self.slug:  # Generate slug only if not provided
             self.slug = slugify(self.name)
+            original_slug = self.slug
+            counter = 1
+            # Ensure uniqueness by appending a counter if needed
+            while Room.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+                self.slug = f"{original_slug}-{counter}"
+                counter += 1
         super().save(*args, **kwargs)
 
     def __str__(self):

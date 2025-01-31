@@ -15,3 +15,4 @@ class RoomAdmin(admin.ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name", "description")
     list_filter = ("name",)
+    ordering = ("name",)

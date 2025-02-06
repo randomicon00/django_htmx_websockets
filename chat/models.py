@@ -56,8 +56,9 @@ class Room(models.Model):
 
     def _get_description_preview(self):
         """Helper method to preview the description."""
+        preview_length = 30  # Move later to constants
         return (
-            f"{self.description[:30]}..."
+            f"{self.description[:preview_length]}..."
             if len(self.description) > 30
             else self.description
         )

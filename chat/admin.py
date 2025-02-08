@@ -9,10 +9,12 @@ class MessageAdmin(admin.ModelAdmin):
     list_filter = ("timestamp",)
     ordering = ("-timestamp",)
     list_select_related = ("room",)  # improve query performance
+    list_per_page = 50
 
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name", "description")
+    list_filter = ()
     ordering = ("name",)

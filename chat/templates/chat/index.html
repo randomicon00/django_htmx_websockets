@@ -1,190 +1,166 @@
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chat Room</title>
     <script src="https://unpkg.com/htmx.org"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-  </head>
+</head>
 
-  <body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <main class="w-full max-w-lg p-6 bg-white shadow-lg rounded-lg">
-      <h1 class="text-2xl font-semibold text-center text-gray-800 mb-4">
-        Chat Room
-      </h1>
+        <h1 class="text-2xl font-semibold text-center text-gray-800 mb-4">
+            Chat Room
+        </h1>
 
-      <div
-        id="chat-messages"
-        class="h-80 overflow-y-auto space-y-4 p-4 border rounded-lg bg-gray-50 scroll-smooth hover:border-blue-500 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-gray-100"
-        aria-live="polite"
-        aria-label="Chat messages"
-        role="status"
-      >
-        <!-- Messages dynamically loaded here -->
-        <p class="text-gray-500 text-center">
-          Start typing a message to see the conversation here.
-        </p>
-      </div>
+        <div id="chat-messages"
+            class="h-80 overflow-y-auto space-y-4 p-4 border rounded-lg bg-gray-50 scroll-smooth hover:border-blue-500 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-gray-100"
+            aria-live="polite" aria-label="Chat messages" role="log">
+            <!-- Messages dynamically loaded here -->
+            <p class="text-gray-500 text-center">
+                Start typing a message to see the conversation here.
+            </p>
+        </div>
 
-      <!-- Scroll to bottom button -->
-      <button
-        id="scroll-to-bottom"
-        class="hidden fixed bottom-16 right-6 bg-blue-500 text-white p-3 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        aria-label="Scroll to latest messages"
-      >
-        ↓
-      </button>
-
-      <!-- Typing indicator -->
-      <div
-        id="typing-indicator"
-        class="text-sm text-gray-500 italic mt-2 hidden"
-        aria-live="polite"
-      >
-        Someone is typing...
-      </div>
-
-      <form
-        hx-ext="ws"
-        ws-connect="/ws/chat/"
-        class="flex items-center mt-4 space-x-3"
-        aria-label="Send a message"
-      >
-        <input
-          type="text"
-          id="message-input"
-          name="message"
-          class="flex-grow border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-lg"
-          placeholder="Type your message..."
-          autocomplete="off"
-          required
-          aria-label="Message input"
-          aria-describedby="chat-messages"
-          aria-controls="chat-messages"
-        />
-        <button
-          type="submit"
-          class="bg-blue-500 text-white px-6 py-2 rounded-lg transition-colors duration-200 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          aria-label="Send message"
-        >
-          Send
+        <!-- Scroll to bottom button -->
+        <button id="scroll-to-bottom"
+            class="hidden fixed bottom-16 right-6 bg-blue-500 text-white p-3 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            aria-label="Scroll to latest messages">
+            ↓
         </button>
-      </form>
+
+        <!-- Typing indicator -->
+        <div id="typing-indicator" class="text-sm text-gray-500 italic mt-2 hidden" aria-live="polite">
+            Someone is typing...
+        </div>
+
+        <form hx-ext="ws" ws-connect="/ws/chat/" class="flex items-center mt-4 space-x-3" aria-label="Send a message">
+            <input type="text" id="message-input" name="message"
+                class="flex-grow border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-lg"
+                placeholder="Type your message..." autocomplete="off" required aria-label="Message input"
+                aria-describedby="chat-messages" aria-controls="chat-messages" />
+            <button type="submit"
+                class="bg-blue-500 text-white px-6 py-2 rounded-lg transition-colors duration-200 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                aria-label="Send message">
+                Send
+            </button>
+        </form>
     </main>
 
     <script>
-      function clearMessageInput() {
-        const messageInput = document.getElementById("message-input");
-        if (messageInput) {
-          messageInput.value = "";
-          messageInput.focus();
+        function clearMessageInput() {
+            const messageInput = document.getElementById("message-input");
+            if (messageInput) {
+                messageInput.value = "";
+                messageInput.focus();
+            }
         }
-      }
 
-      function formatTime() {
-        const now = new Date();
-        const hours = now.getHours().toString().padStart(2, "0");
-        const minutes = now.getMinutes().toString().padStart(2, "0");
-        return `${hours}:${minutes}`;
-      }
+        function formatTime() {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, "0");
+            const minutes = now.getMinutes().toString().padStart(2, "0");
+            return `${hours}:${minutes}`;
+        }
 
-      const messageInput = document.getElementById("message-input");
-      const typingIndicator = document.getElementById("typing-indicator");
-      let typingTimeout;
+        const messageInput = document.getElementById("message-input");
+        const typingIndicator = document.getElementById("typing-indicator");
+        let typingTimeout;
 
-      messageInput.addEventListener("input", () => {
-        typingIndicator.classList.remove("hidden");
-        if (typingTimeout) clearTimeout(typingTimeout);
-        typingTimeout = setTimeout(() => {
-          typingIndicator.classList.add("hidden");
-        }, 1000);
-      });
+        messageInput.addEventListener("input", () => {
+            typingIndicator.classList.remove("hidden");
+            if (typingTimeout) clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                typingIndicator.classList.add("hidden");
+            }, 1000);
+        });
 
-      document.body.addEventListener("htmx:wsAfterMessage", function (evt) {
-        const data = JSON.parse(evt.detail.message);
+        document.body.addEventListener("htmx:wsAfterMessage", function (evt) {
+            const data = JSON.parse(evt.detail.message);
+            const chatMessages = document.getElementById("chat-messages");
+
+            // Remove initial placeholder text on first message
+            const placeholder = chatMessages.querySelector("p");
+            if (placeholder) chatMessages.removeChild(placeholder);
+
+            const messageDiv = document.createElement("div");
+            messageDiv.className = `flex ${data.type === "user" ? "justify-end" : "justify-start"} mb-2 group`;
+
+            const messageBubble = document.createElement("div");
+            const bgColor =
+                data.type === "user"
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-100 text-gray-800";
+
+            messageBubble.className = `${bgColor} rounded-lg px-4 py-2 max-w-xs relative transition-all duration-100 hover:shadow-md hover:-translate-y-0.5`;
+
+            // Message text
+            const messageText = document.createElement("span");
+            messageText.className = "pr-8"; // Leave space for timestamp
+            messageText.textContent = data.message;
+
+            // Timestamp inside bubble
+            const timestamp = document.createElement("span");
+            timestamp.className = `absolute bottom-1 right-2 text-xs ${data.type === "user" ? "text-blue-100" : "text-gray-500"
+                } opacity-80 group-hover:opacity-100 transition-opacity`;
+            timestamp.textContent = formatTime();
+
+            // Add elements to bubble
+            messageBubble.appendChild(messageText);
+            messageBubble.appendChild(timestamp);
+
+            messageDiv.appendChild(messageBubble);
+            chatMessages.appendChild(messageDiv);
+
+            // Smart scroll behavior
+            const isNearBottom =
+                chatMessages.scrollHeight -
+                chatMessages.clientHeight -
+                chatMessages.scrollTop <
+                100;
+            if (isNearBottom) {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            clearMessageInput();
+        });
+
+        document.querySelector("form").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const messageInput = document.getElementById("message-input");
+            const message = messageInput.value.trim();
+            if (message) {
+                this.dispatchEvent(
+                    new CustomEvent("htmx:wsSend", {
+                        detail: {
+                            message: JSON.stringify({message: message, type: "user"}),
+                        },
+                    }),
+                );
+            }
+        });
+
         const chatMessages = document.getElementById("chat-messages");
+        const scrollToBottomBtn = document.getElementById("scroll-to-bottom");
 
-        // Remove initial placeholder text on first message
-        const placeholder = chatMessages.querySelector("p");
-        if (placeholder) chatMessages.removeChild(placeholder);
+        chatMessages.addEventListener("scroll", () => {
+            if (
+                chatMessages.scrollTop <
+                chatMessages.scrollHeight - chatMessages.clientHeight - 20
+            ) {
+                scrollToBottomBtn.classList.remove("hidden");
+            } else {
+                scrollToBottomBtn.classList.add("hidden");
+            }
+        });
 
-        const messageDiv = document.createElement("div");
-        messageDiv.className = `flex ${data.type === "user" ? "justify-end" : "justify-start"} mb-2 group`;
-
-        const messageBubble = document.createElement("div");
-        const bgColor =
-          data.type === "user"
-            ? "bg-blue-500 text-white"
-            : "bg-gray-100 text-gray-800";
-
-        messageBubble.className = `${bgColor} rounded-lg px-4 py-2 max-w-xs relative transition-all duration-100 hover:shadow-md hover:-translate-y-0.5`;
-
-        // Message text
-        const messageText = document.createElement("span");
-        messageText.className = "pr-8"; // Leave space for timestamp
-        messageText.textContent = data.message;
-
-        // Timestamp inside bubble
-        const timestamp = document.createElement("span");
-        timestamp.className = `absolute bottom-1 right-2 text-xs ${
-          data.type === "user" ? "text-blue-100" : "text-gray-500"
-        } opacity-80 group-hover:opacity-100 transition-opacity`;
-        timestamp.textContent = formatTime();
-
-        // Add elements to bubble
-        messageBubble.appendChild(messageText);
-        messageBubble.appendChild(timestamp);
-
-        messageDiv.appendChild(messageBubble);
-        chatMessages.appendChild(messageDiv);
-
-        // Smart scroll behavior
-        const isNearBottom =
-          chatMessages.scrollHeight -
-            chatMessages.clientHeight -
-            chatMessages.scrollTop <
-          100;
-        if (isNearBottom) {
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        clearMessageInput();
-      });
-
-      document.querySelector("form").addEventListener("submit", function (e) {
-        e.preventDefault();
-        const messageInput = document.getElementById("message-input");
-        const message = messageInput.value.trim();
-        if (message) {
-          this.dispatchEvent(
-            new CustomEvent("htmx:wsSend", {
-              detail: {
-                message: JSON.stringify({ message: message, type: "user" }),
-              },
-            }),
-          );
-        }
-      });
-
-      const chatMessages = document.getElementById("chat-messages");
-      const scrollToBottomBtn = document.getElementById("scroll-to-bottom");
-
-      chatMessages.addEventListener("scroll", () => {
-        if (
-          chatMessages.scrollTop <
-          chatMessages.scrollHeight - chatMessages.clientHeight - 20
-        ) {
-          scrollToBottomBtn.classList.remove("hidden");
-        } else {
-          scrollToBottomBtn.classList.add("hidden");
-        }
-      });
-
-      scrollToBottomBtn.addEventListener("click", () => {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      });
+        scrollToBottomBtn.addEventListener("click", () => {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
     </script>
-  </body>
+</body>
+
 </html>

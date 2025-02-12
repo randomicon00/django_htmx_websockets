@@ -59,7 +59,7 @@ class Room(models.Model):
         """Helper method to preview the description."""
         return (
             f"{self.description[:ROOM_DESCRIPTION_PREVIEW_LENGTH]}..."
-            if len(self.description) > 30
+            if len(self.description) > ROOM_DESCRIPTION_PREVIEW_LENGTH
             else self.description
         )
 

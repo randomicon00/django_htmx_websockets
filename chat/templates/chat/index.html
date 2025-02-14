@@ -121,7 +121,7 @@
                 chatMessages.clientHeight -
                 chatMessages.scrollTop <
                 100;
-            if (isNearBottom) {
+            if (isNearBottom || data.type === "user") {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
 

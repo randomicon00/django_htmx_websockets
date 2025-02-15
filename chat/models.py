@@ -40,7 +40,7 @@ class Room(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:  # Generate slug only if not provided
-            self.slug = slugify(self.name)
+            self.slug = slugify(self.name.strip())
             original_slug = self.slug
             counter = 1
             # Ensure uniqueness by appending a counter if needed

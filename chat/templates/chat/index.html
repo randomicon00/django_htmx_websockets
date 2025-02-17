@@ -79,7 +79,13 @@
         });
 
         document.body.addEventListener("htmx:wsAfterMessage", function (evt) {
-            const data = JSON.parse(evt.detail.message);
+            const data;
+            try {
+                data = JSON.parse(evt.detail.message);
+            } catch (error) {
+                console.error("Error parsing message:", error);
+                return;
+            }
             const chatMessages = document.getElementById("chat-messages");
 
             // Remove initial placeholder text on first message

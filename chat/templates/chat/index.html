@@ -128,7 +128,7 @@
                 chatMessages.scrollTop <
                 100;
             if (isNearBottom || data.type === "user") {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                chatMessages.scrollTo({top: chatMessages.scrollHeight, behavior: "smooth"});
             }
 
             clearMessageInput();

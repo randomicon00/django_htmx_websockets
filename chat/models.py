@@ -44,7 +44,11 @@ class Room(models.Model):
             original_slug = self.slug
             counter = 1
             # Ensure uniqueness by appending a counter if needed
-            while Room.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+            while (
+                self.__class__.objects.filter(slug=self.slug)
+                .exclude(pk=self.pk)
+                .exists()
+            ):
                 self.slug = f"{original_slug}-{counter}"
                 counter += 1
         super().save(*args, **kwargs)

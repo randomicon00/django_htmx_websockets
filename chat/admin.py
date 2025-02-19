@@ -8,7 +8,7 @@ class MessageAdmin(admin.ModelAdmin):
     search_fields = ("content",)
     list_filter = ("timestamp",)
     ordering = ("-timestamp",)
-    list_select_related = ("room",)  # improve query performance
+    list_select_related = ("room",)
     list_per_page = 50
 
 

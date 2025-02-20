@@ -15,6 +15,8 @@ from .constants import (
 
 
 class Room(models.Model):
+    """Model representing a chat room."""
+
     name = models.CharField(
         max_length=ROOM_NAME_MAX_LENGTH,
         verbose_name="Room Name",
@@ -69,6 +71,8 @@ class Room(models.Model):
 
 
 class Message(models.Model):
+    """Model representing a message within a chat room."""
+
     room = models.ForeignKey(
         Room,
         on_delete=models.CASCADE,

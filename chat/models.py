@@ -1,5 +1,5 @@
 from django.db import models
-from django.utils.text import slugify
+from django.utils.text import slugify, Truncator
 
 from .constants import (
     ROOM_NAME_MAX_LENGTH,
@@ -63,10 +63,8 @@ class Room(models.Model):
 
     def _get_description_preview(self):
         """Helper method to preview the description."""
-        return (
-            f"{self.description[:ROOM_DESCRIPTION_PREVIEW_LENGTH]}..."
-            if len(self.description) > ROOM_DESCRIPTION_PREVIEW_LENGTH
-            else self.description
+        return Truncator(self.description).chars(
+            ROOM_DESCRIPTION_PREVIEW_LENGTH, truncate="..."
         )
 
 

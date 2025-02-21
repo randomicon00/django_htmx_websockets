@@ -104,8 +104,6 @@ class Message(models.Model):
 
     def _get_content_preview(self):
         """Helper method to preview the content."""
-        return (
-            f"{self.content[:MESSAGE_CONTENT_PREVIEW_LENGTH]}..."
-            if len(self.content) > MESSAGE_CONTENT_PREVIEW_LENGTH
-            else self.content
+        return Truncator(self.content).chars(
+            MESSAGE_CONTENT_PREVIEW_LENGTH, truncate="..."
         )

@@ -19,6 +19,7 @@ if [ $? -eq 0 ]; then
     # Push the committed changes to the remote repository
     git push
 else
+    # Exit with code 1 if an error occurs.
     echo "Commit failed. Please check your changes and try again."
-    exit 1 # Exit with an error status if the commit fails
+    exit 1
 fi

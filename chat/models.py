@@ -14,6 +14,16 @@ from .constants import (
 )
 
 
+def generate_unique_slug(instance):
+    base_slug = slugify(instance.name.strip())
+    slug = base_slug
+    counter = 1
+    while instance.__class__.objects.filter(slug=slug).exclude(pk=instance.pk).exists():
+        slug = f"{base_slug}-{counter}"
+        counter += 1
+    return slug
+
+
 class Room(models.Model):
     """Model representing a chat room."""
 
@@ -42,17 +52,7 @@ class Room(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:  # Generate slug only if not provided
-            self.slug = slugify(self.name.strip())
-            original_slug = self.slug
-            counter = 1
-            # Ensure uniqueness by appending a counter if needed
-            while (
-                self.__class__.objects.filter(slug=self.slug)
-                .exclude(pk=self.pk)
-                .exists()
-            ):
-                self.slug = f"{original_slug}-{counter}"
-                counter += 1
+            self.slug = generate_unique_slug(self)
         super().save(*args, **kwargs)
 
     def __str__(self):

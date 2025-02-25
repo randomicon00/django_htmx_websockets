@@ -11,15 +11,11 @@ COMMIT_MESSAGE="$1"
 # Add all changes (tracked, new, and modified files) to the staging area
 git add .
 
-# Commit the changes with the provided commit message
-git commit -m "$COMMIT_MESSAGE"
-
-# Check if the commit was successful before attempting to push
-if [ $? -eq 0 ]; then
-    # Push the committed changes to the remote repository
+# Commit the changes with the provided commit message, checking success inline
+if git commit -m "$COMMIT_MESSAGE"; then
+    # Push the committed changes to the remote repository if commit succeeds
     git push
 else
-    # Exit with code 1 if an error occurs.
     echo "Commit failed. Please check your changes and try again."
     exit 1
 fi

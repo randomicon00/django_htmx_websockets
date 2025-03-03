@@ -123,7 +123,7 @@
         const bgColor =
           data.type === "user"
             ? "bg-blue-500 text-white"
-            : "bg-gray-100 text-gray-800";
+            : "bg-gray-100 text-gray-800 shadow-sm ring-1 ring-gray-200/50";
 
         messageBubble.className = `${bgColor} rounded-lg px-4 py-2 max-w-xs relative transition-all duration-100 hover:shadow-md hover:-translate-y-0.5`;
 
@@ -183,15 +183,15 @@
       const scrollToBottomBtn = document.getElementById("scroll-to-bottom");
 
       /*chatMessages.addEventListener("scroll", () => {
-              if (
-                chatMessages.scrollTop <
-                chatMessages.scrollHeight - chatMessages.clientHeight - 20
-              ) {
-                scrollToBottomBtn.classList.remove("hidden");
-              } else {
-                scrollToBottomBtn.classList.add("hidden");
-              }
-            });*/
+                  if (
+                    chatMessages.scrollTop <
+                    chatMessages.scrollHeight - chatMessages.clientHeight - 20
+                  ) {
+                    scrollToBottomBtn.classList.remove("hidden");
+                  } else {
+                    scrollToBottomBtn.classList.add("hidden");
+                  }
+                });*/
       function updateScrollButton() {
         const isAtBottom =
           chatMessages.scrollHeight -

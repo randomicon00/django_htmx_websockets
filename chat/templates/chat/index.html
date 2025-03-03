@@ -146,6 +146,8 @@
         messageDiv.appendChild(messageBubble);
         chatMessages.appendChild(messageDiv);
 
+        updateScrollButton();
+
         // Smart scroll behavior
         const isNearBottom =
           chatMessages.scrollHeight -
@@ -180,16 +182,26 @@
       const chatMessages = document.getElementById("chat-messages");
       const scrollToBottomBtn = document.getElementById("scroll-to-bottom");
 
-      chatMessages.addEventListener("scroll", () => {
-        if (
-          chatMessages.scrollTop <
-          chatMessages.scrollHeight - chatMessages.clientHeight - 20
-        ) {
-          scrollToBottomBtn.classList.remove("hidden");
-        } else {
-          scrollToBottomBtn.classList.add("hidden");
-        }
-      });
+      /*chatMessages.addEventListener("scroll", () => {
+              if (
+                chatMessages.scrollTop <
+                chatMessages.scrollHeight - chatMessages.clientHeight - 20
+              ) {
+                scrollToBottomBtn.classList.remove("hidden");
+              } else {
+                scrollToBottomBtn.classList.add("hidden");
+              }
+            });*/
+      function updateScrollButton() {
+        const isAtBottom =
+          chatMessages.scrollHeight -
+            chatMessages.clientHeight -
+            chatMessages.scrollTop <
+          20;
+        scrollToBottomBtn.classList.toggle("hidden", isAtBottom);
+      }
+
+      chatMessages.addEventListener("scroll", updateScrollButton);
 
       scrollToBottomBtn.addEventListener("click", () => {
         chatMessages.scrollTop = chatMessages.scrollHeight;

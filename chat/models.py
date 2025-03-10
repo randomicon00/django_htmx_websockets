@@ -93,6 +93,7 @@ class Message(models.Model):
         verbose_name = MESSAGE_VERBOSE_NAME
         verbose_name_plural = MESSAGE_VERBOSE_NAME_PLURAL
         ordering = MESSAGE_ORDERING
+        indexes = [models.Index(fields=["-timestamp"], name="timestamp_desc_idx")]
 
     def __str__(self):
         return f"Message in {self.room.name} at {self.timestamp}: {self._get_content_preview()}"

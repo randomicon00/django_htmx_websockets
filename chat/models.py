@@ -51,7 +51,7 @@ class Room(models.Model):
         ordering = ROOM_ORDERING
 
     def save(self, *args, **kwargs):
-        if not self.slug or self.name != self._original_name:
+        if not self.slug or getattr(self, "_original_name", None) != self.name:
             self.slug = generate_unique_slug(self)
         super().save(*args, **kwargs)
         self._original_name = self.name

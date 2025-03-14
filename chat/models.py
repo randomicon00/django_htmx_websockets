@@ -34,6 +34,7 @@ class Room(models.Model):
         unique=True,
     )
     slug = models.SlugField(
+        max_length=ROOM_NAME_MAX_LENGTH,
         unique=True,
         blank=True,
         verbose_name="Slug",

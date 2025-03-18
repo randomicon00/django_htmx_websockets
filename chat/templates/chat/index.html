@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>💬 Chat Room</title>
-    <script src="https://unpkg.com/htmx.org"></script>
+    <script src="https://unpkg.com/htmx.org" defer></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
@@ -183,15 +183,15 @@
       const scrollToBottomBtn = document.getElementById("scroll-to-bottom");
 
       /*chatMessages.addEventListener("scroll", () => {
-                    if (
-                      chatMessages.scrollTop <
-                      chatMessages.scrollHeight - chatMessages.clientHeight - 20
-                    ) {
-                      scrollToBottomBtn.classList.remove("hidden");
-                    } else {
-                      scrollToBottomBtn.classList.add("hidden");
-                    }
-                  });*/
+                      if (
+                        chatMessages.scrollTop <
+                        chatMessages.scrollHeight - chatMessages.clientHeight - 20
+                      ) {
+                        scrollToBottomBtn.classList.remove("hidden");
+                      } else {
+                        scrollToBottomBtn.classList.add("hidden");
+                      }
+                    });*/
       function updateScrollButton() {
         const isAtBottom =
           chatMessages.scrollHeight -

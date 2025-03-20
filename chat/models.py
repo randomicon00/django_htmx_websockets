@@ -83,6 +83,8 @@ class Message(models.Model):
     content = models.TextField(
         verbose_name="Message Content",
         help_text="Enter the content of the message.",
+        null=True,  # column can be NULL in database
+        blank=True,  # field can be blank in fields
     )
     timestamp = models.DateTimeField(
         auto_now_add=True,

@@ -8,7 +8,7 @@ from .models import Message, Room
 class MessageAdmin(admin.ModelAdmin):
     date_hierarchy = "timestamp"
     list_display = ("content", "room", "timestamp")
-    search_fields = ("content",)
+    search_fields = ("content", "room_name")
     list_filter = ("timestamp",)
     ordering = ("-timestamp",)
     list_select_related = ("room",)

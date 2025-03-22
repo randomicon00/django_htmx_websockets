@@ -9,7 +9,7 @@ class MessageAdmin(admin.ModelAdmin):
     date_hierarchy = "timestamp"
     list_display = ("content", "room", "timestamp")
     search_fields = ("content", "room__name")
-    list_filter = ("timestamp",)
+    list_filter = ("timestamp", "room")
     ordering = ("-timestamp",)
     list_select_related = ("room",)
     list_per_page = 50

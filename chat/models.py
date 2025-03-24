@@ -15,11 +15,17 @@ from .constants import (
 
 
 def generate_unique_slug(instance):
-    base_slug = slugify(instance.name.strip())
-    slug = base_slug
+    base = slugify(instance.name.strip())
+    slug = base
+    qs = instance.__class__.objects.filter(slug=slug)
+    if instance.pk:
+        qs = qs.exclude(pk=instance.pk)
     counter = 1
-    while instance.__class__.objects.filter(slug=slug).exclude(pk=instance.pk).exists():
-        slug = f"{base_slug}-{counter}"
+    while qs.exists():
+        slug = f"{base}-{counter}"
+        qs = instance.__class__.objects.filter(slug=slug)
+        if instance.pk:
+            qs = qs.exclude(pk=instance.pk)
         counter += 1
     return slug
 

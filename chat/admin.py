@@ -13,6 +13,7 @@ class MessageAdmin(admin.ModelAdmin):
     ordering = ("-timestamp",)
     list_select_related = ("room",)
     list_per_page = 50
+    autocomplete_fields = ("room",)
 
 
 @admin.register(Room)

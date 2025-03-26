@@ -182,16 +182,6 @@
       const chatMessages = document.getElementById("chat-messages");
       const scrollToBottomBtn = document.getElementById("scroll-to-bottom");
 
-      /*chatMessages.addEventListener("scroll", () => {
-                      if (
-                        chatMessages.scrollTop <
-                        chatMessages.scrollHeight - chatMessages.clientHeight - 20
-                      ) {
-                        scrollToBottomBtn.classList.remove("hidden");
-                      } else {
-                        scrollToBottomBtn.classList.add("hidden");
-                      }
-                    });*/
       function updateScrollButton() {
         const isAtBottom =
           chatMessages.scrollHeight -

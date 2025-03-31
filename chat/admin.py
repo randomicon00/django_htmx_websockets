@@ -14,6 +14,7 @@ class MessageAdmin(admin.ModelAdmin):
     list_select_related = ("room",)
     list_per_page = 50
     autocomplete_fields = ("room",)
+    readonly_fields = ("timestamp",)
 
 
 @admin.register(Room)

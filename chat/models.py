@@ -21,15 +21,12 @@ def generate_unique_slug(instance):
     """
     base = slugify(instance.name.strip())
     slug = base
-    qs = instance.__class__.objects.filter(slug=slug)
+    counter = 1
+    qs = instance.__class__.objects.all()
     if instance.pk:
         qs = qs.exclude(pk=instance.pk)
-    counter = 1
-    while qs.exists():
+    while qs.filter(slug=slug).exists():
         slug = f"{base}-{counter}"
-        qs = instance.__class__.objects.filter(slug=slug)
-        if instance.pk:
-            qs = qs.exclude(pk=instance.pk)
         counter += 1
     return slug
 

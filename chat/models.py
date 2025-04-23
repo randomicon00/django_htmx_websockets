@@ -19,7 +19,8 @@ def generate_unique_slug(instance):
     Generates a unique slug for the given model instance based on its name.
     If a slug already exists, it appends a counter until a unique slug is found.
     """
-    base = slugify(instance.name.strip())
+    max_len = instance._meta.get_field("slug").max_length
+    base = slugify(instance.name.strip())[:max_len]
     slug = base
     counter = 1
     qs = instance.__class__.objects.all()

@@ -27,7 +27,9 @@ def generate_unique_slug(instance):
     if instance.pk:
         qs = qs.exclude(pk=instance.pk)
     while qs.filter(slug=slug).exists():
-        slug = f"{base}-{counter}"
+        # slug = f"{base}-{counter}"
+        suffix = f"-{counter}"
+        slug = f"{base[: max_len - len(suffix)]}{suffix}"
         counter += 1
     return slug
 

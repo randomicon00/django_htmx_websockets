@@ -21,6 +21,6 @@ class MessageAdmin(admin.ModelAdmin):
 class RoomAdmin(admin.ModelAdmin):
     list_display = ("name", "description")
     search_fields = ("name", "description")
-    list_filter = ("timestamp", "room")
+    list_filter = ("name",)
     ordering = ("name",)
     list_per_page = 50

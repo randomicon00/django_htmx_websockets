@@ -11,6 +11,12 @@ COMMIT_MESSAGE="$1"
 # Add all changes (tracked, new, and modified files) to the staging area
 git add .
 
+# Check for staged changes before committing
+if git diff --cached --quiet; then
+    echo "No changes to commit."
+    exit 0
+fi
+
 # Commit the changes with the provided commit message, checking success inline
 if git commit -m "$COMMIT_MESSAGE"; then
     # Push the committed changes to the remote repository if commit succeeds

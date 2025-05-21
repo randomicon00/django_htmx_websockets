@@ -24,7 +24,8 @@ def generate_unique_slug(instance):
     base = slugify(instance.name.strip().replace("–", "-").replace("—", "-"))[:max_len]
     slug = base
     counter = 1
-    qs = instance.__class__.objects.all()
+    # qs = instance.__class__.objects.all()
+    qs = instance.__class__.objects.filter(slug__startswith=base)
     if instance.pk:
         qs = qs.exclude(pk=instance.pk)
     while qs.filter(slug=slug).exists():

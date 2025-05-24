@@ -11,10 +11,13 @@ class MessageAdmin(admin.ModelAdmin):
     search_fields = ("content", "room__name")
     list_filter = ("room",)
     ordering = ("-timestamp",)
-    list_select_related = ("room",)
     list_per_page = 50
     autocomplete_fields = ("room",)
     readonly_fields = ("timestamp",)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related("room")
 
 
 @admin.register(Room)

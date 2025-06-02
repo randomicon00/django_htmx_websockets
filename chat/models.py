@@ -21,7 +21,9 @@ def generate_unique_slug(instance):
     """
     max_len = instance._meta.get_field("slug").max_length
     # base = slugify(instance.name.strip())[:max_len]
-    base = slugify(instance.name.strip().replace("–", "-").replace("—", "-"))[:max_len]
+    base = slugify(instance.name.strip().replace("–", "-").replace("—", "-")).lower()[
+        :max_len
+    ]
     slug = base
     counter = 1
     # qs = instance.__class__.objects.all()

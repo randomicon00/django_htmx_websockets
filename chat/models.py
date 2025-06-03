@@ -56,6 +56,7 @@ class Room(models.Model):
     )
     description = models.TextField(
         blank=True,
+        null=True,
         verbose_name="Description",
         help_text="Provide a brief description of the room (optional).",
     )

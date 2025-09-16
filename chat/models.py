@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.text import slugify, Truncator
+from django.contrib.auth.models import User
 
 from .constants import (
     ROOM_NAME_MAX_LENGTH,
@@ -60,6 +61,11 @@ class Room(models.Model):
         verbose_name="Description",
         help_text="Provide a brief description of the room (optional).",
     )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name="Last Updated",
+        help_text="The time this room was last updated.",
+    )
 
     class Meta:
         verbose_name = ROOM_VERBOSE_NAME
@@ -84,6 +90,10 @@ class Room(models.Model):
             ROOM_DESCRIPTION_PREVIEW_LENGTH, truncate="..."
         )
 
+    def get_recent_messages(self, limit=10):
+        """Get the most recent messages in this room."""
+        return self.messages.order_by('-timestamp')[:limit]
+
 
 class Message(models.Model):
     """Model representing a message within a chat room."""
@@ -94,6 +104,13 @@ class Message(models.Model):
         related_name="messages",
         verbose_name="Room",
         help_text="Select the room this message belongs to.",
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="messages",
+        verbose_name="User",
+        help_text="The user who sent this message.",
     )
     content = models.TextField(
         verbose_name="Message Content",
@@ -114,11 +131,11 @@ class Message(models.Model):
         indexes = [models.Index(fields=["-timestamp"], name="timestamp_desc_idx")]
 
     def __str__(self):
-        return f"Message in {self.room.name} at {self.timestamp}: {self._get_content_preview()}"
+        return f"Message by {self.user.username} in {self.room.name} at {self.timestamp}: {self._get_content_preview()}"
 
     def __repr__(self):
         return (
-            f"<Message(room='{self.room.name}', timestamp='{self.timestamp}', "
+            f"<Message(user='{self.user.username}', room='{self.room.name}', timestamp='{self.timestamp}', "
             f"content_preview='{self._get_content_preview()}')>"
         )
 

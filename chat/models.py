@@ -21,18 +21,15 @@ def generate_unique_slug(instance):
     In case a slug already exists, appends a counter to the slug.
     """
     max_len = instance._meta.get_field("slug").max_length
-    # base = slugify(instance.name.strip())[:max_len]
     base = slugify(instance.name.strip().replace("–", "-").replace("—", "-")).lower()[
         :max_len
     ]
     slug = base
     counter = 1
-    # qs = instance.__class__.objects.all()
     qs = instance.__class__.objects.filter(slug__startswith=base)
     if instance.pk:
         qs = qs.exclude(pk=instance.pk)
     while qs.filter(slug=slug).exists():
-        # slug = f"{base}-{counter}"
         suffix = f"-{counter}"
         slug = f"{base[: max_len - len(suffix)]}{suffix}"
         counter += 1
@@ -40,7 +37,7 @@ def generate_unique_slug(instance):
 
 
 class Room(models.Model):
-    """Model representing a chat room."""
+    """A chat room where users can send messages."""
 
     name = models.CharField(
         max_length=ROOM_NAME_MAX_LENGTH,
@@ -96,7 +93,7 @@ class Room(models.Model):
 
 
 class Message(models.Model):
-    """Model representing a message within a chat room."""
+    """A message sent by a user in a chat room."""
 
     room = models.ForeignKey(
         Room,
@@ -115,8 +112,6 @@ class Message(models.Model):
     content = models.TextField(
         verbose_name="Message Content",
         help_text="Enter the content of the message.",
-        null=True,  # column can be NULL in database
-        blank=True,  # field can be blank in fields
     )
     timestamp = models.DateTimeField(
         auto_now_add=True,

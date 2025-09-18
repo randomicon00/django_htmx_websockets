@@ -17,7 +17,7 @@
         </h1>
 
         <div id="chat-messages"
-            class="h-80 overflow-y-auto space-y-4 p-4 border rounded-lg bg-gray-50 scroll-smooth hover:border-blue-500 scrollbar-thin scrollbar-thumb-blue-200 scrollbar-track-gray-100"
+            class="h-80 overflow-y-auto space-y-4 p-4 border border-gray-200 rounded-lg bg-gray-50 scroll-smooth hover:border-gray-300 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
             aria-live="polite" aria-label="Chat messages" role="log">
             <!-- Messages dynamically loaded here -->
             <p class="text-gray-500 text-center">
@@ -44,12 +44,15 @@
                 aria-describedby="chat-messages" aria-controls="chat-messages" autofocus />
             <button type="submit"
                 class="bg-blue-500 text-white px-6 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
-                aria-label="Send message"
-                hx-indicator="#send-indicator">
+                aria-label="Send message" hx-indicator="#send-indicator">
                 <span id="send-indicator" class="htmx-indicator flex items-center justify-center">
-                    <svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
                     </svg>
                     <span class="font-medium animate-pulse">Sending...</span>
                 </span>
@@ -107,7 +110,7 @@
             const bgColor =
                 data.type === "user"
                     ? "bg-blue-500 text-white"
-                    : "bg-gray-100 text-gray-800 shadow-sm ring-1 ring-gray-200/50";
+                    : "bg-gray-200 text-gray-800 shadow-sm ring-1 ring-gray-300/30";
 
             messageBubble.className = `${bgColor} rounded-lg px-4 py-2 max-w-xs relative transition-all duration-100 hover:shadow-md hover:-translate-y-0.5`;
 
@@ -118,8 +121,8 @@
 
             // Timestamp inside bubble
             const timestamp = document.createElement("span");
-            timestamp.className = `absolute bottom-1 right-2 text-xs ${data.type === "user" ? "text-blue-100" : "text-gray-500"
-                } opacity-80 group-hover:opacity-100 transition-opacity`;
+            timestamp.className = `absolute bottom-1 right-2 text-xs ${data.type === "user" ? "text-blue-100" : "text-gray-600"
+                } opacity-75 group-hover:opacity-100 transition-opacity`;
             timestamp.textContent = formatTime();
 
             // Add elements to bubble
@@ -155,7 +158,7 @@
                 this.dispatchEvent(
                     new CustomEvent("htmx:wsSend", {
                         detail: {
-                            message: JSON.stringify({message: message, type: "user"}),
+                            message: JSON.stringify({ message: message, type: "user" }),
                         },
                     }),
                 );

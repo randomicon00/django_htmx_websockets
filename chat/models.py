@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify, Truncator
 from django.contrib.auth.models import User
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 
 from .constants import (
     ROOM_NAME_MAX_LENGTH,
@@ -112,6 +113,11 @@ class Message(models.Model):
     content = models.TextField(
         verbose_name="Message Content",
         help_text="Enter the content of the message.",
+        blank=False,
+        validators=[
+            MinLengthValidator(1, message="Message cannot be empty."),
+            MaxLengthValidator(1000, message="Message cannot exceed 1000 characters."),
+        ],
     )
     timestamp = models.DateTimeField(
         auto_now_add=True,

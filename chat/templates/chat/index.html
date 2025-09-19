@@ -27,9 +27,12 @@
 
         <!-- Scroll to bottom button -->
         <button id="scroll-to-bottom"
-            class="hidden fixed bottom-16 right-6 bg-blue-500 text-white p-3 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            aria-label="Scroll to latest messages">
-            ↓
+            class="hidden fixed bottom-16 right-6 bg-blue-500 text-white p-3 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            aria-label="Scroll to bottom of chat messages"
+            aria-describedby="scroll-description"
+            tabindex="0">
+            <span aria-hidden="true">↓</span>
+            <span id="scroll-description" class="sr-only">Scroll to view the latest messages</span>
         </button>
 
         <!-- Typing indicator -->
@@ -41,7 +44,9 @@
             <input type="text" id="message-input" name="message"
                 class="flex-grow border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-lg"
                 placeholder="Type your message..." autocomplete="off" required aria-label="Message input"
-                aria-describedby="chat-messages" aria-controls="chat-messages" autofocus />
+                aria-describedby="chat-messages input-help" aria-controls="chat-messages" autofocus
+                maxlength="1000" />
+            <span id="input-help" class="sr-only">Enter your message and press Send or Enter to submit. Maximum 1000 characters.</span>
             <button type="submit"
                 class="bg-blue-500 text-white px-6 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
                 aria-label="Send message" hx-indicator="#send-indicator">

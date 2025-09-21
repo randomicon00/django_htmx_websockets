@@ -113,7 +113,7 @@ class Message(models.Model):
     content = models.TextField(
         verbose_name="Message Content",
         help_text="Enter the content of the message.",
-        blank=False,
+        blank=True,
         validators=[
             MinLengthValidator(1, message="Message cannot be empty."),
             MaxLengthValidator(1000, message="Message cannot exceed 1000 characters."),
@@ -124,12 +124,21 @@ class Message(models.Model):
         verbose_name="Timestamp",
         help_text="The time this message was created.",
     )
+    read_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name="Read At",
+        help_text="The time this message was read by the recipient.",
+    )
 
     class Meta:
         verbose_name = MESSAGE_VERBOSE_NAME
         verbose_name_plural = MESSAGE_VERBOSE_NAME_PLURAL
         ordering = MESSAGE_ORDERING
-        indexes = [models.Index(fields=["-timestamp"], name="timestamp_desc_idx")]
+        indexes = [
+            models.Index(fields=["-timestamp"], name="timestamp_desc_idx"),
+            models.Index(fields=["read_at"], name="read_at_idx"),
+        ]
 
     def __str__(self):
         return f"Message by {self.user.username} in {self.room.name} at {self.timestamp}: {self._get_content_preview()}"

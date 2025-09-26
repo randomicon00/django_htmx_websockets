@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Real-time chat application with WebSocket support" />
     <title>💬 Django Chat Room</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
     <script src="https://unpkg.com/htmx.org" defer></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -30,9 +31,7 @@
         <!-- Scroll to bottom button -->
         <button id="scroll-to-bottom"
             class="hidden fixed bottom-16 right-6 bg-blue-500 text-white p-3 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            aria-label="Scroll to bottom of chat messages"
-            aria-describedby="scroll-description"
-            tabindex="0">
+            aria-label="Scroll to bottom of chat messages" aria-describedby="scroll-description" tabindex="0">
             <span aria-hidden="true">↓</span>
             <span id="scroll-description" class="sr-only">Scroll to view the latest messages</span>
         </button>
@@ -46,9 +45,9 @@
             <input type="text" id="message-input" name="message"
                 class="flex-grow border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-lg"
                 placeholder="Type your message..." autocomplete="off" required aria-label="Message input"
-                aria-describedby="chat-messages input-help" aria-controls="chat-messages" autofocus
-                maxlength="1000" />
-            <span id="input-help" class="sr-only">Enter your message and press Send or Enter to submit. Maximum 1000 characters.</span>
+                aria-describedby="chat-messages input-help" aria-controls="chat-messages" autofocus maxlength="1000" />
+            <span id="input-help" class="sr-only">Enter your message and press Send or Enter to submit. Maximum 1000
+                characters.</span>
             <button type="submit"
                 class="bg-blue-500 text-white px-6 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
                 aria-label="Send message" hx-indicator="#send-indicator">
@@ -169,6 +168,9 @@
                         },
                     }),
                 );
+                // Hide typing indicator and clear timeout on send
+                if (typingTimeout) clearTimeout(typingTimeout);
+                typingIndicator.classList.add("hidden");
             }
         });
 

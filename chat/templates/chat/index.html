@@ -49,22 +49,41 @@
             <span id="input-help" class="sr-only">Enter your message and press Send or Enter to submit. Maximum 1000
                 characters.</span>
             <button type="submit"
-                class="bg-blue-500 text-white px-6 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
-                aria-label="Send message" hx-indicator="#send-indicator">
-                <span id="send-indicator" class="htmx-indicator flex items-center justify-center">
-                    <svg class="animate-spin h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3">
-                        </circle>
-                        <path class="opacity-75" fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                        </path>
-                    </svg>
-                    <span class="font-medium animate-pulse">Sending...</span>
-                </span>
-                <span class="htmx-indicator-else font-medium">Send</span>
+                class="bg-blue-500 text-white px-6 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[100px]"
+                aria-label="Send message">
+                <span class="font-medium">Send</span>
             </button>
         </form>
+
+        <!-- Footer -->
+        <footer class="mt-6 text-center text-sm text-gray-500">
+            <p class="flex items-center justify-center gap-2 flex-wrap">
+                <span>Powered by</span>
+                <a href="https://www.djangoproject.com/" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center gap-1 text-green-700 hover:text-green-800 font-semibold transition-colors">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11.146 0h3.924v18.166c-2.013.382-3.491.535-5.096.535-4.791 0-7.288-2.166-7.288-6.32 0-4.002 2.65-6.6 6.753-6.6.637 0 1.121.05 1.707.203zm0 9.143a3.894 3.894 0 00-1.325-.204c-1.988 0-3.134 1.223-3.134 3.365 0 2.09 1.096 3.236 3.109 3.236.433 0 .79-.025 1.35-.102V9.143zM21.314 6.06v9.098c0 3.134-.229 4.638-.917 5.937-.637 1.249-1.478 2.039-3.211 2.905l-3.644-1.733c1.733-.815 2.574-1.529 3.109-2.625.561-1.121.739-2.421.739-5.835V6.059h3.924zM17.39.021h3.924v4.026H17.39V.021z"/>
+                    </svg>
+                    Django
+                </a>
+                <span class="text-gray-400">•</span>
+                <a href="https://htmx.org/" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 font-semibold transition-colors">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M0 12.5L6.5 6v4h4.5v5H6.5v4L0 12.5zm17-7L10.5 12l6.5 6.5V14h4.5V9.5H17V5.5z"/>
+                    </svg>
+                    HTMX
+                </a>
+                <span class="text-gray-400">•</span>
+                <a href="https://channels.readthedocs.io/" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center gap-1 text-purple-600 hover:text-purple-700 font-semibold transition-colors">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    Channels
+                </a>
+            </p>
+        </footer>
     </main>
 
     <script>

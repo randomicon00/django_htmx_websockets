@@ -1,13 +1,26 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables from .env file
+# To use .env file, install python-dotenv: pip install python-dotenv
+# Then uncomment the following lines:
+# from dotenv import load_dotenv
+# load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = "django-insecure-$2#uxf75u05l_9o(qcw6u-$x)x%bq2_mxho3=iedtn-0s!w$sd"
 
-DEBUG = True
+# SECURITY WARNING: keep the secret key used in production secret!
+# Generate a new one using: python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY",
+    "django-insecure-$2#uxf75u05l_9o(qcw6u-$x)x%bq2_mxho3=iedtn-0s!w$sd"  # Default for development only
+)
 
-ALLOWED_HOSTS = []
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = os.environ.get("DEBUG", "True") == "True"
+
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
 INSTALLED_APPS = [

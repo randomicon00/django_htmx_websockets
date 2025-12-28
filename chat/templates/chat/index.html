@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Real-time chat application with WebSocket support" />
-    <title>💬 Django/HTMX Chat Room</title>
+    <title>💬 Django Chat Room</title>
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
     <script src="https://unpkg.com/htmx.org" defer></script>
@@ -16,7 +16,7 @@
 <body class="bg-gray-100 min-h-screen flex items-center justify-center">
     <main class="w-full max-w-lg p-6 bg-white shadow-lg rounded-lg">
         <h1 class="text-2xl font-semibold text-center text-gray-800 mb-4">
-            💬 Example Chat Room
+            💬 Chat Room
         </h1>
 
         <div id="chat-messages"
@@ -24,7 +24,7 @@
             aria-live="polite" aria-label="Chat messages" role="log">
             <!-- Messages dynamically loaded here -->
             <p class="text-gray-500 text-center">
-                Start typing a message to see the conversation here... 
+                Start typing a message to see the conversation here.
             </p>
         </div>
 
@@ -46,7 +46,7 @@
                 class="flex-grow border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:shadow-lg"
                 placeholder="Type your message..." autocomplete="off" required aria-label="Message input"
                 aria-describedby="chat-messages input-help" aria-controls="chat-messages" autofocus maxlength="1000" />
-            <span id="input-help" class="sr-only">Enter your message and press [Send] or [Enter] to submit. Maximum 1000
+            <span id="input-help" class="sr-only">Enter your message and press Send or Enter to submit. Maximum 1000
                 characters.</span>
             <button type="submit"
                 class="bg-blue-500 text-white px-6 py-2 rounded-lg transition-all duration-200 ease-in-out hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
@@ -106,7 +106,7 @@
             }
             const chatMessages = document.getElementById("chat-messages");
 
-            // Remove initial placeholder text after the first message
+            // Remove initial placeholder text on first message
             const placeholder = chatMessages.querySelector("p");
             if (placeholder) chatMessages.removeChild(placeholder);
 
